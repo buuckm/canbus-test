@@ -21,21 +21,18 @@ Code hochladen:
 #define BAUD_RATE 9600
 
 // MCP_CAN objekt erstellen.
-// Der erste parameter legt fest, welcher pin als CS pin
-// fuer die SPI Verbindung zum CAN-Controllers verwendet wird.
+// Der erste parameter legt fest, welcher pin als CS pin fuer die SPI Verbindung zum CAN-Controller verwendet wird.
 // Wir verbinden D1 des ESP8266 mit CS des CAN-Controllers.
 MCP_CAN CAN(D1);
 
 void setup(){
     // Seriellen Monitor initialisieren.
     Serial.begin(BAUD_RATE);
+    Serial.println("[BUZZER] begin setup");
     
     /*
-    Serial.println("[BUZZER] receiver setup begin");  
-    Wir versuchen so lange den CAN-Controller zu initialisieren,
-    bis der Rückgabewert CAN_OK ist.
-    Der erste parameter (MCP_*) filtert Frames anhand ihres typen
-    und der laenge der id. Es gibt folgende varianten:
+    Wir versuchen so lange den CAN-Controller zu initialisieren, bis der Rückgabewert CAN_OK ist.
+    Der erste parameter (MCP_*) filtert Frames anhand ihres typen und der laenge der id. Es gibt folgende varianten:
         - MCP_STDEXT: Frames mit Standard und Erweiterten IDs (11bit und 29bit)
         - MCP_STD: Nur Frames mit Standard IDs
         - MCP_EXT: Nur Frames mit Erweiterten IDs
@@ -57,9 +54,8 @@ void setup(){
         - CAN_250KBPS
         - CAN_500KBPS
         - CAN_1000KBPS
-    Der dritte parameter (MCP_*HZ) muss der Frequenz der Clock des CAN-Controllers
-    entsprechen. Diese ist auf einem Großen silbernen Bauteil eingraviert.
-    Jede verbundene Node muss die gleiche Frequenz haben.
+    Der dritte parameter (MCP_*HZ) muss der Frequenz der Clock des CAN-Controllers entsprechen.
+    Diese ist auf einem Großen silbernen Bauteil eingraviert. Jede verbundene Node muss die gleiche Frequenz haben.
     */
     while (CAN.begin(MCP_ANY, CAN_500KBPS, MCP_8MHZ) != CAN_OK){
         Serial.println("[BUZZER] failed to init CAN. retrying...");
@@ -67,7 +63,7 @@ void setup(){
     }
 
     /*  
-    Konfiguriert, in welchem modus der CAN-Controller operiert.
+    Konfigurieren, in welchem modus der CAN-Controller operiert. Moegliche Werte:
         - MCP_NORMAL: Frames Empfangen und Senden
         - MCP_SLEEP: Standby modus
         - MCP_LOOPBACK: Frames werden nicht nach aussen gesendet und selbst empfangen
@@ -98,8 +94,7 @@ void loop(){
         Serial.println("-------------------------");
         Serial.printf("[BUZZER] got message with id %d and length %d\n", messageId, messageLength);
         
-        // Wir ignorieren alle Nachrichten, welche nicht die von uns Festgelegte ID fuer
-        // Nachrichten mit Temperaturdaten haben.
+        // Wir ignorieren alle Nachrichten, welche nicht die von uns Festgelegte ID fuer Nachrichten mit Temperaturdaten haben.
         if (messageId != TEMPERATURE_MESSAGE_ID) return;
         
         // Wenn die laenge der Nachricht der groesse eines floats (4 Byte) entspricht,
@@ -108,8 +103,7 @@ void loop(){
             // Wir definieren eine Pointer-Variable, welche die adresse des floats speichert.
             // Sie wird mit der adresse des Nachrichtenbuffers initialisiert.
             // Das macht es möglich den Wert an dieser Adresse als einen float zu interpretieren.
-            // Um den Wert aus der Adresse zu lesen, welche die Variable enthaelt, muss diese
-            // mit einem "*" dereferenziert werden.
+            // Um den Wert aus der Adresse zu lesen, muss diese mit einem "*" dereferenziert werden.
             float* temperature = (float*)dataBuffer;
             Serial.printf("[BUZZER] temperature: %f\n", *temperature);
             if (*temperature > TEMPERATURE_THRESHOLD){
