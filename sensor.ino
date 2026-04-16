@@ -23,8 +23,7 @@ Code hochladen:
 #define TEMPERATURE_MESSAGE_ID 0x100
 
 // MCP_CAN objekt erstellen.
-// Der erste parameter legt fest, welcher pin als CS pin
-// fuer die SPI Verbindung zum CAN-Controllers verwendet wird.
+// Der erste parameter legt fest, welcher pin als CS pin fuer die SPI Verbindung zum CAN-Controller verwendet wird.
 // Wir verbinden D1 des ESP8266 mit CS des CAN-Controllers.
 MCP_CAN CAN(D1);
 
@@ -36,18 +35,16 @@ DHT dht(DHT_PIN, DHT_TYPE);
 void setup(){
     // Seriellen Monitor initialisieren.
     Serial.begin(BAUDE_RATE);
-
+    Serial.println("[BUZZER] begin setup");
+    
     /*
-    Serial.println("[BUZZER] receiver setup begin");  
-    Wir versuchen so lange den CAN-Controller zu initialisieren,
-    bis der Rückgabewert CAN_OK ist.
-    Der erste parameter (MCP_*) filtert Frames anhand ihres typen
-    und der laenge der id. Es gibt folgende varianten:
+    Wir versuchen so lange den CAN-Controller zu initialisieren, bis der Rückgabewert CAN_OK ist.
+    Der erste Parameter (MCP_*) filtert Frames anhand ihres typen und der laenge der id. Es gibt folgende varianten:
         - MCP_STDEXT: Frames mit Standard und Erweiterten IDs (11bit und 29bit)
         - MCP_STD: Nur Frames mit Standard IDs
         - MCP_EXT: Nur Frames mit Erweiterten IDs
         - MCP_ANY: Jede Art von ID und jede Art von Frame, inklusive Error/Overload Frames
-    Der zweite parameter (CAN_*BPS) legt die Uebertragungsrate fest. Jede verbundene Node
+    Der zweite Parameter (CAN_*BPS) legt die Uebertragungsrate fest. Jede verbundene Node
     muss mit der gleichen Uebertragungsrate arbeiten. Mögliche varianten:
         - CAN_4K096BPS
         - CAN_5KBPS
@@ -64,7 +61,7 @@ void setup(){
         - CAN_250KBPS
         - CAN_500KBPS
         - CAN_1000KBPS
-    Der dritte parameter (MCP_*HZ) muss der Frequenz der Clock des CAN-Controllers
+    Der dritte Parameter (MCP_*HZ) muss der Frequenz der Clock des CAN-Controllers
     entsprechen. Diese ist auf einem Großen silbernen Bauteil eingraviert.
     Jede verbundene Node muss die gleiche Frequenz haben.
     */
@@ -73,7 +70,7 @@ void setup(){
         delay(100);
     }
     /*  
-    Konfiguriert, in welchem modus der CAN-Controller operiert.
+    Konfigurieren, in welchem modus der CAN-Controller operiert.
         - MCP_NORMAL: Frames Empfangen und Senden
         - MCP_SLEEP: Standby modus
         - MCP_LOOPBACK: Frames werden nicht nach aussen gesendet und selbst empfangen
@@ -103,11 +100,8 @@ void loop(){
     // Hier senden wir eine Nachricht, welche die Temperatur enthaelt.
     // Der erste Parameter ist die ID, die der Frame haben soll.
     // Der zweite Parameter legt fest, ob wir eine Erweiterte ID verwenden (29 anstatt 11 Bits).
-    // Der dritte Parameter ist die Groesse des Nachrichtenbuffers. In diesem Fall nehmen
-    // wir einfach die Groesse der temperature Variable.
-    // Der dritte Parameter ist die Adresse des Nachrichtenbuffers. Wir nehmen einfach die
-    // Adresse der temperature Variable, und reinterpretieren diese als die Adresse eines
-    // Buffers an 1-Byte unsigned integers (einzelne Bytes).
+    // Der dritte Parameter ist die Adresse des Nachrichtenbuffers. Wir nehmen die Adresse der temperature Variable,
+    // und reinterpretieren diese als die Adresse eines Buffers an 1-Byte unsigned integers (einzelne Bytes).
     uint8_t isExtendedId = 0;
     uint8_t messageBufferLength = sizeof(temperature);
     uint8_t* messageBuffer = (uint8_t*)&temperature;
