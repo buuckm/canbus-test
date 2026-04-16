@@ -1,3 +1,10 @@
+/*
+Code hochladen:
+1. Board für Sender auswählen: LOLIN(WEMOS) D1 R2 & mini
+2. Korrekten Port auswaehlen: /dev/ttyUSB0, /dev/ttyUSB1, ... oder aehnlich
+3. Upload Knopf in der IDE druecken um den Code auf den ESP zu flashen.
+*/
+
 // Funktions- und Klassendeklarationen der Bibliotheken inkludieren.
 // Header und Source Dateien von mcp_can: https://github.com/coryjfowler/MCP_CAN_lib
 #include <mcp_can.h>
